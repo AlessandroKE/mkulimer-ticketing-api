@@ -1,0 +1,30 @@
+{
+  "name": "mkulimer-ticketing-api",
+  "version": "1.0.0",
+  "description": "A learning project for an ISP customer support ticketing system.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlessandroKE/mkulimer-ticketing-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/AlessandroKE/mkulimer-ticketing-api/issues"
+  },
+  "homepage": "https://github.com/AlessandroKE/mkulimer-ticketing-api#readme",
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
