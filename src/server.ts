@@ -1,24 +1,10 @@
-import { createServer } from "node:http";
+import { app } from "./app.js";
+import dotenv from "dotenv";
 
-const server = createServer((req, res) => {
-  if (req.method === "GET" && req.url === "/health") {
-    res.writeHead(200, {
-      "Content-Type": "application/json",
-    });
+dotenv.config();
 
-    res.end(JSON.stringify({ status: "ok!" }));
-    return;
-  }
+const port = Number(process.env.PORT) || 3000;
 
-  res.writeHead(404, {
-    "Content-Type": "application/json",
-  });
-
-  res.end(JSON.stringify({ error: "Not Found" }));
-});
-
-const port = 3000;
-
-server.listen(port, "127.0.0.1", () => {
-  console.log(`Server is running at http://127.0.0.1:${port}`);
+app.listen(port, "localhost", () => {
+  console.log(`API listening at http://localhost:${port}`);
 });
