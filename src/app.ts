@@ -9,7 +9,7 @@ export const app = createServer(async (request, response) => {
         return;
     }
     
-    if (request.method === 'POST' && request.url === 'api/v1/tickets') {
+    if (request.method === 'POST' && request.url === '/api/v1/tickets') {
         await createTicketController(request, response);
         return;
     }
