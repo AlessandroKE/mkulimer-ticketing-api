@@ -1,5 +1,5 @@
 import {createServer} from 'node:http';
-import {createTicketController} from './controllers/ticket.controller.js';
+import {createTicketController, getAllTicketsController} from './controllers/ticket.controller.js';
 import {sendJson} from './http/send-json.js';
 
 export const app = createServer(async (request, response) => {
@@ -11,6 +11,11 @@ export const app = createServer(async (request, response) => {
     
     if (request.method === 'POST' && request.url === '/api/v1/tickets') {
         await createTicketController(request, response);
+        return;
+    }
+
+    if (request.method === 'GET' && request.url === '/api/v1/tickets') {
+        await getAllTicketsController(request, response);
         return;
     }
 });

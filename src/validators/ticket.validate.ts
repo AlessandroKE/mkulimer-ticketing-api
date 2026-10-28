@@ -4,6 +4,10 @@ type ValidationResult =
    | {isValid: true, data: createTicketInput}
    | {isValid: false, message: string}
 
+// type TicketValidation =
+//   | { isValid: true; data: Record<string, unknown> }
+//   | { isValid: false; message: string };
+
 
 function isObject(value: unknown): value is Record<string, unknown> {
     return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -71,3 +75,6 @@ return {
 };
 
 }
+
+
+

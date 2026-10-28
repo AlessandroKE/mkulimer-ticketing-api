@@ -1,6 +1,8 @@
-import {pool} from '../db/pool.js';
-import {createTicketInput, Ticket} from '../types/ticket.type.js';
+import { pool } from '../db/pool.js';
+import { createTicketInput, createTicketOutput, Ticket } from '../types/ticket.type.js';
 
+
+// create Ticket
 export async function insertTicket(
     tenantId: string,
     ticketData: createTicketInput
@@ -19,13 +21,13 @@ export async function insertTicket(
       status,
       created_at AS "createdAt",
       updated_at AS "updatedAt"`,
-    [
-      tenantId,
-      ticketData.customerName,
-      ticketData.phoneNumber,
-      ticketData.subject,
-      ticketData.description,
-    ],
+        [
+            tenantId,
+            ticketData.customerName,
+            ticketData.phoneNumber,
+            ticketData.subject,
+            ticketData.description,
+        ],
     );
 
     const ticket = result.rows[0];
@@ -34,3 +36,31 @@ export async function insertTicket(
     }
     return ticket;
 }
+
+// Get all tickets for a specific tenant
+export async function getAllTickets(
+    tenantId: string,
+): Promise<createTicketOutput[]> {
+    const result = await pool.query<createTicketOutput>(
+        `SELECT
+       ticket_id AS "ticketId",
+       customer_name AS "customerName",
+       phone_number AS "phoneNumber",
+       subject,
+       description,
+       status,
+       created_at AS "createdAt",
+       updated_at AS "updatedAt"
+     FROM tickets
+     WHERE tenant_id = $1
+     ORDER BY created_at DESC`,
+        [tenantId],
+    );
+    const tickets = result.rows;
+    if (tickets == null || tickets.length === 0) {
+        throw new Error('Failed to retrieve tickets');
+    }
+    return tickets;
+}
+
+// 

@@ -13,3 +13,7 @@ CREATE TABLE tickets (
 
 CREATE INDEX tickets_tenant_created_idx
   ON tickets (tenant_id, created_at DESC);
+
+ALTER TABLE tickets
+ADD CONSTRAINT tickets_priority_check
+CHECK (priority IN ('low', 'medium', 'high', 'urgent'));

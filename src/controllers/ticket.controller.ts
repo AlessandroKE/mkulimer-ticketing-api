@@ -3,7 +3,7 @@ import { readJsonBody, PayloadTooLargeError } from '../http/read-json-body.js';
 //import {createTicketInput, Ticket} from '../types/ticket.type.js';
 import { sendJson } from '../http/send-json.js';
 import{validateCreateTicket} from '../validators/ticket.validate.js'
-import {createTicket} from '../services/tickets.service.js'
+import {createTicket, getAllTicketsService} from '../services/tickets.service.js'
 
 export async function createTicketController(
     request: IncomingMessage,
@@ -35,3 +35,15 @@ try {
     sendJson(response, 500, { error: "Could not create ticket" });
   }
 }
+
+export async function getAllTicketsController(
+    request: IncomingMessage,
+    response: ServerResponse): Promise<void> {
+    try {
+        const tickets = await getAllTicketsService();
+        sendJson(response, 200, { tickets });
+    } catch (error) {
+        console.error("Failed to retrieve tickets:", error);
+        sendJson(response, 500, { error: "Could not retrieve tickets" });
+    }
+  }
