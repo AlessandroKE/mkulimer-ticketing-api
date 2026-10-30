@@ -1,4 +1,5 @@
 import {createTicketInput} from '../types/ticket.type.js';
+import {TicketPriority, TicketStatus, TicketFilters} from '../types/ticket.type.js'
 
 type ValidationResult = 
    | {isValid: true, data: createTicketInput}
@@ -77,4 +78,131 @@ return {
 }
 
 
+type ValidationResultFilters =
+    | {
+          isValid: true;
+          data: TicketFilters;
+      }
+    | {
+          isValid: false;
+          message: string;
+      };
+
+const validStatuses: TicketStatus[] = [
+    "open",
+    "closed",
+    "assigned",
+    "in-progress",
+    "resolved",
+];
+
+const validPriorities: TicketPriority[] = [
+    "low",
+    "medium",
+    "high",
+    "critical",
+];
+
+export function validateTicketFilters(
+    searchParams: URLSearchParams,
+): ValidationResultFilters {
+    const status = searchParams.get("status");
+    const priority = searchParams.get("priority");
+
+    const createdAfter = searchParams.get("createdAfter");
+    const createdBefore = searchParams.get("createdBefore");
+
+    const customerName = searchParams.get("customerName");
+    const phoneNumber = searchParams.get("phoneNumber");
+    const subject = searchParams.get("subject");
+    const description = searchParams.get("description");
+
+    const pageValue = searchParams.get("page");
+    const limitValue = searchParams.get("limit");
+
+    // Validate status
+    if (status !== null && !validStatuses.includes(status as TicketStatus)) {
+        return {
+            isValid: false,
+            message: "Invalid ticket status",
+        };
+    }
+
+    // Validate priority
+    if (
+        priority !== null &&
+        !validPriorities.includes(priority as TicketPriority)
+    ) {
+        return {
+            isValid: false,
+            message: "Invalid ticket priority",
+        };
+    }
+
+    // Validate page
+    const page = pageValue === null ? 1 : Number(pageValue);
+
+    if (!Number.isInteger(page) || page < 1) {
+        return {
+            isValid: false,
+            message: "Page must be a positive integer",
+        };
+    }
+
+    // Validate limit
+    const limit = limitValue === null ? 10 : Number(limitValue);
+
+    if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
+        return {
+            isValid: false,
+            message: "Limit must be an integer between 1 and 100",
+        };
+    }
+
+    // Parse and validate dates
+    const afterDate =
+        createdAfter !== null ? new Date(createdAfter) : undefined;
+
+    const beforeDate =
+        createdBefore !== null ? new Date(createdBefore) : undefined;
+
+    if (afterDate && Number.isNaN(afterDate.getTime())) {
+        return {
+            isValid: false,
+            message: "Invalid createdAfter date",
+        };
+    }
+
+    if (beforeDate && Number.isNaN(beforeDate.getTime())) {
+        return {
+            isValid: false,
+            message: "Invalid createdBefore date",
+        };
+    }
+
+    if (afterDate && beforeDate && afterDate > beforeDate) {
+        return {
+            isValid: false,
+            message: "createdAfter must be before or equal to createdBefore",
+        };
+    }
+
+    const filters: TicketFilters = {
+        status: status === null ? undefined : (status as TicketStatus),
+        priority: priority === null ? undefined : (priority as TicketPriority),
+        createdAfter: afterDate,
+        createdBefore: beforeDate,
+        customerName: customerName || undefined,
+        phoneNumber: phoneNumber || undefined,
+        subject: subject || undefined,
+        description: description || undefined,
+        page,
+        limit,
+    };
+
+    return {
+        isValid: true,
+        data: filters,
+    };
+}
 
